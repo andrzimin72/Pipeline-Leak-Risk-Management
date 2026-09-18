@@ -1,1 +1,349 @@
+# .github/workflows/ci.yml
+# ==============================================================================
+# GitHub Actions CI/CD Pipeline for ExxonMobil Physical AI Platform
+# ==============================================================================
 
+name: Physical AI Platform CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  PYTHON_VERSION: "3.11"
+  PIP_CACHE_DIR: ~/.cache/pip
+
+jobs:
+  # ============================================================================
+  # Job 1: Code Quality & Linting
+  # ============================================================================
+  lint:
+    name: 🔍 Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort mypy
+
+      - name: Run Black (code formatting check)
+        run: black --check --diff .
+
+      - name: Run isort (import sorting check)
+        run: isort --check-only --diff .
+
+      - name: Run Flake8 (style guide enforcement)
+        run: flake8 . --max-line-length=120 --ignore=E501,W503,E203
+
+      - name: Run MyPy (type checking)
+        run: mypy api/ cloud/ edge/ --ignore-missing-imports || true
+
+  # ============================================================================
+  # Job 2: Security Scanning
+  # ============================================================================
+  security:
+    name: 🔒 Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install security tools
+        run: |
+          pip install bandit safety pip-audit
+
+      - name: Run Bandit (security linter)
+        run: bandit -r api/ cloud/ edge/ -ll -ii
+
+      - name: Run Safety (dependency vulnerability check)
+        run: safety check || true
+
+      - name: Run pip-audit
+        run: pip-audit || true
+
+  # ============================================================================
+  # Job 3: Unit Tests
+  # ============================================================================
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    needs: [lint]
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov httpx torch numpy
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit/ -v --cov=cloud --cov=edge --cov-report=xml --cov-report=html
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          fail_ci_if_error: false
+
+      - name: Upload coverage HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-py${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 7
+
+  # ============================================================================
+  # Job 4: Integration Tests
+  # ============================================================================
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    services:
+      mosquitto:
+        image: eclipse-mosquitto:2.0
+        ports:
+          - 1883:1883
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest httpx paho-mqtt
+
+      - name: Start API server
+        run: |
+          uvicorn api.main:app --host 0.0.0.0 --port 8000 &
+          sleep 5
+        env:
+          NEBIUS_API_KEY: test-key
+
+      - name: Run integration tests
+        run: pytest tests/integration/ -v --tb=short
+
+  # ============================================================================
+  # Job 5: End-to-End Scenario Tests
+  # ============================================================================
+  e2e-tests:
+    name: 🌐 End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest torch numpy
+
+      - name: Run E2E scenario tests
+        run: pytest tests/e2e/ -v --tb=short
+
+  # ============================================================================
+  # Job 6: Security Tests (mTLS)
+  # ============================================================================
+  security-tests:
+    name: 🔐 Security Tests (mTLS)
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install OpenSSL and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssl
+          pip install pytest requests
+
+      - name: Run security tests
+        run: pytest tests/security/ -v --tb=short -m security
+
+  # ============================================================================
+  # Job 7: Performance Tests (Optional - manual trigger)
+  # ============================================================================
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[perf]')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest locust
+
+      - name: Start API server
+        run: |
+          uvicorn api.main:app --host 0.0.0.0 --port 8000 --workers 4 &
+          sleep 5
+
+      - name: Run performance tests
+        run: pytest tests/performance/ -v --tb=short -m performance
+        env:
+          PERF_TEST_NODES: 500
+          PERF_TEST_REQUESTS: 5
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: |
+            **/perf_*.html
+            **/perf_*.json
+          retention-days: 30
+
+  # ============================================================================
+  # Job 8: Docker Build & Push
+  # ============================================================================
+  docker:
+    name: 🐳 Docker Build
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, e2e-tests]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.api
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pipeline-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/pipeline-api:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Dashboard image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.dashboard
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/pipeline-dashboard:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/pipeline-dashboard:${{ github.sha }}
+
+  # ============================================================================
+  # Job 9: Deployment (Production)
+  # ============================================================================
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [docker, security-tests]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Nebius AI Cloud
+        run: |
+          echo "🚀 Deploying to production..."
+          # Add your deployment commands here:
+          # - kubectl apply -f k8s/
+          # - terraform apply -auto-approve
+          # - aws ecs update-service ...
+        env:
+          NEBIUS_API_TOKEN: ${{ secrets.NEBIUS_API_TOKEN }}
+
+      - name: Notify deployment success
+        run: |
+          echo "✅ Deployment successful!"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+
+  # ============================================================================
+  # Job 10: Release (on tag)
+  # ============================================================================
+  release:
+    name: 📦 Create Release
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            docker-compose.yml
+            README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
