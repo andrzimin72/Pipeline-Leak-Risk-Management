@@ -1,0 +1,71 @@
+# ==============================================================================
+# Pipeline Leak Risk Management Physical AI Platform - Git Ignore
+# ==============================================================================
+
+# --- Security & Environment ---
+.env
+*.key
+*.crt
+*.pem
+security/certs/
+
+# --- Python Artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- IDE & Editor Files ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Project Specific Data & Artifacts ---
+data/
+backups/
+htmlcov/
+.coverage
+*.log
+
+# --- Large Model Files (Use Git LFS if needed) ---
+*.engine
+*.pth
+*.pt
+*.onnx
+cloud/deployment/jetson_artifacts/
+
+# --- Jupyter Notebooks (Optional) ---
+.ipynb_checkpoints
