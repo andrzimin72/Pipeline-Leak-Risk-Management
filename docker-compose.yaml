@@ -1,0 +1,283 @@
+# ==============================================================================
+# Pipeline Leak Risk Management Physical AI Platform - Docker Compose Orchestration
+# Full-stack deployment for local development and staging
+# ==============================================================================
+
+version: '3.9'
+
+# ==============================================================================
+# Shared Networks
+# ==============================================================================
+networks:
+  pipeline-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+  monitoring-net:
+    driver: bridge
+
+# ==============================================================================
+# Shared Volumes
+# ==============================================================================
+volumes:
+  postgres-data:
+    driver: local
+  mosquitto-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  api-data:
+    driver: local
+
+# ==============================================================================
+# Services
+# ==============================================================================
+services:
+
+  # --------------------------------------------------------------------------
+  # 1. PostgreSQL Database (Risk assessments, audit logs, GIS data)
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: pipeline-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pipeline}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: pipeline_ai
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - pipeline-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pipeline"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # --------------------------------------------------------------------------
+  # 2. Mosquitto MQTT Broker (mTLS secured)
+  # --------------------------------------------------------------------------
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: pipeline-mosquitto
+    user: "1883:1883"
+    ports:
+      - "8883:8883"   # mTLS MQTT
+      - "9001:9001"   # WebSocket
+    volumes:
+      - ./security/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./security/certs:/mosquitto/certs:ro
+      - mosquitto-data:/mosquitto/data
+    networks:
+      - pipeline-net
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck -W 3 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 3. FastAPI Cloud Backend
+  # --------------------------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: pipeline-api
+    environment:
+      - NEBIUS_API_KEY=${NEBIUS_API_KEY:-your-nebius-api-key-here}
+      - SAP_AUTH_TOKEN=${SAP_AUTH_TOKEN:-mock-sap-token}
+      - SAP_API_URL=${SAP_API_URL:-https://sap-gateway.exxonmobil.com}
+      - DATABASE_URL=postgresql://pipeline:changeme@postgres:5432/pipeline_ai
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=8883
+      - LOG_LEVEL=INFO
+    volumes:
+      - api-data:/app/data
+      - ./security/certs:/app/security/certs:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    networks:
+      - pipeline-net
+      - monitoring-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # --------------------------------------------------------------------------
+  # 4. Federated Learning Aggregation Server
+  # --------------------------------------------------------------------------
+  federated-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: pipeline-fed-server
+    environment:
+      - FL_AGGREGATION_INTERVAL_HOURS=24
+      - FL_MIN_NODES_FOR_ROUND=10
+    ports:
+      - "5000:5000"
+    depends_on:
+      - api
+    networks:
+      - pipeline-net
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 5. Streamlit Executive Dashboard
+  # --------------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: pipeline-dashboard
+    environment:
+      - API_BASE_URL=http://api:8000
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_HEADLESS=true
+    volumes:
+      - api-data:/app/data:ro
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - pipeline-net
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 6. Edge Node Simulator (Jetson Orin emulation)
+  # --------------------------------------------------------------------------
+  edge-node-042:
+    build:
+      context: .
+      dockerfile: Dockerfile.edge
+    container_name: pipeline-edge-042
+    environment:
+      - NODE_ID=JETSON-NODE-042
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=8883
+      - API_URL=http://api:8000
+      - FED_SERVER_URL=http://federated-server:5000
+    volumes:
+      - ./security/certs:/app/security/certs:ro
+      - ./cloud/deployment/jetson_artifacts:/app/models:ro
+    depends_on:
+      mosquitto:
+        condition: service_started
+      api:
+        condition: service_healthy
+    networks:
+      - pipeline-net
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 7. Cosmos Black Swan Generator (Synthetic Data)
+  # --------------------------------------------------------------------------
+  cosmos-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.cosmos
+    container_name: pipeline-cosmos
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=8883
+      - SCENARIO=cascading_failure
+    volumes:
+      - ./security/certs:/app/security/certs:ro
+    depends_on:
+      - mosquitto
+    networks:
+      - pipeline-net
+    profiles:
+      - testing  # Only runs when explicitly requested
+
+  # --------------------------------------------------------------------------
+  # 8. Prometheus (Metrics Collection)
+  # --------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: pipeline-prometheus
+    user: "65534:65534"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerting-rules.yml:/etc/prometheus/alerting-rules.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring-net
+      - pipeline-net
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 9. Grafana (Visualization)
+  # --------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: pipeline-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring-net
+    restart: unless-stopped
+
+  # --------------------------------------------------------------------------
+  # 10. Alertmanager (Alert Routing)
+  # --------------------------------------------------------------------------
+  alertmanager:
+    image: prom/alertmanager:v0.27.0
+    container_name: pipeline-alertmanager
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring-net
+    restart: unless-stopped
