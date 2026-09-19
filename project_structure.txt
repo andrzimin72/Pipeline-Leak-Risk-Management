@@ -1,0 +1,103 @@
+Pipeline Leak Risk Management Physical AI Platform/
+│
+├── api/                            # FastAPI Cloud Backend
+│   ├── __init__.py
+│   └── main.py                     # Main API endpoints, PHMSA & Risk orchestration
+│
+├── cloud/                          # Cloud Services & Enterprise Logic
+│   ├── __init__.py
+│   ├── risk/
+│   │   ├── __init__.py
+│   │   └── risk_engine.py          # API 581 Dynamic Risk Scoring (PoF x CoF)
+│   ├── planner/
+│   │   ├── __init__.py
+│   │   └── mitigation_planner.py   # SAP/Maximo Work Order generation
+│   ├── training/
+│   │   ├── __init__.py
+│   │   └── train_sentinel_transformer.py # PyTorch model training
+│   └── deployment/
+│       ├── __init__.py
+│       └── export_to_jetson.py     # ONNX/TensorRT export for Edge
+│
+├── dashboard/                      # Streamlit Executive Dashboard
+│   ├── __init__.py
+│   └── app.py                      # Main UI, Heatmaps, and Logs
+│
+├── edge/                           # NVIDIA Jetson Orin Edge Layer
+│   ├── __init__.py
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── schemas.py              # Shared SitRep & SCADACommand dataclasses
+│   │   ├── sentinel_agent.py       # Agent 1: PyTorch Transformer Perception
+│   │   ├── commander_agent.py      # Agent 2: Nemotron Reasoning & Interlock
+│   │   └── operator_agent.py       # Agent 3: Modbus/SCADA Translation
+│   ├── inference/
+│   │   ├── __init__.py
+│   │   └── fusion_model.py         # Main Edge Orchestrator & PhysicsNeMo
+│   ├── mesh/
+│   │   ├── __init__.py
+│   │   └── swarm_mesh.py           # ZeroMQ Edge-to-Edge Gossip Protocol
+│   ├── ai/
+│   │   ├── __init__.py
+│   │   └── cascade_gnn.py          # Graph Neural Network for cascade prediction
+│   └── sensors/                    # 10 Physical Sensor MQTT Publishers
+│       ├── __init__.py
+│       ├── acoustic_listener.py
+│       ├── pressure_listener.py
+│       ├── coriolis_mass_flow_listener.py
+│       ├── fiber_dts_listener.py
+│       ├── point_temperature_listener.py
+│       ├── soil_moisture_listener.py
+│       ├── capacitive_listener.py
+│       ├── vibration_listener.py
+│       ├── corrosion_listener.py
+│       └── standard_flow_listener.py
+│
+├── shared/                         # Global Configuration
+│   ├── __init__.py
+│   └── constants.py                # Thresholds, network config, physics constants
+│
+├── tests/                          # Comprehensive Test Suite
+│   ├── __init__.py
+│   ├── conftest.py                 # Shared Pytest fixtures
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_risk_engine.py
+│   │   ├── test_safety_interlock.py
+│   │   ├── test_mitigation_planner.py
+│   │   └── test_sentinel_agent.py
+│   ├── integration/
+│   │   ├── __init__.py
+│   │   └── test_api_endpoints.py
+│   ├── e2e/
+│   │   ├── __init__.py
+│   │   └── test_black_swan_scenario.py
+│   ├── performance/
+│   │   ├── __init__.py
+│   │   └── test_load_simulation.py
+│   └── security/
+│       ├── __init__.py
+│       └── test_mtls_security.py
+│
+├── docs/                           # Documentation
+│   ├── architecture/               # C4 Model Diagrams (Mermaid & PNG)
+│   └── disaster-recovery/          # DR Strategy & Runbooks
+│
+├── helm/                           # Kubernetes Helm Charts
+├── terraform/                      # Infrastructure as Code (Nebius Cloud)
+├── monitoring/                     # Prometheus & Grafana Configs
+├── scripts/                        # Backup & Utility Scripts
+├── security/                       # mTLS Certificates & Mosquitto Config
+│
+├── data/                           # Local JSON logs (Gitignored)
+├── backups/                        # Automated backups (Gitignored)
+│
+├── .env.example                    # Environment variable template
+├── .gitignore                      # Git ignore rules
+├── config.yaml                     # Non-sensitive static configuration
+├── demo_mustang_segment_v3.py      # Interactive Executive Demo Script
+├── docker-compose.yaml             # Local full-stack orchestration
+├── Dockerfile.api                  # Production API container
+├── Makefile                        # Automation commands
+├── project_structure.txt           # project's structure
+└── requirements.txt                # Python dependencies
