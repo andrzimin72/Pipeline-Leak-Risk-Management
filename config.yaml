@@ -1,0 +1,65 @@
+# config.yaml
+# ==============================================================================
+# Pipeline Leak Risk Management Physical AI Platform - Main Configuration
+# ==============================================================================
+
+# Pipeline & Asset Context
+pipeline:
+  name: "EMPCO Mustang Heavy Crude Line"
+  segment_length_km: 346
+  default_node_id: "EMPCO-MUSTANG-SEG4-NODE042"
+  high_consequence_area: true
+
+# MQTT & Edge Communication
+mqtt:
+  broker: "localhost"
+  port: 8883
+  topic_prefix: "exxonmobil/pipeline/"
+  qos: 1
+  keepalive: 60
+
+# 11-Modal Sensor Thresholds (Edge Inference)
+thresholds:
+  acoustic_rms: 0.35
+  pressure_drop_psi: 15.0
+  mass_imbalance_percent: 0.5
+  fiber_thermal_anomaly_c: 1.5
+  temp_drop_celsius: 2.5
+  soil_moisture_change_percent: 8.0
+  capacitance_change_percent: 5.0
+  vibration_g: 0.8
+  corrosion_rate_mpy: 5.0
+  standard_flow_percent: 2.0
+
+# PhysicsNeMo & Risk Engine
+physics_nemo:
+  pipe_length_m: 5000.0
+  baseline_pressure_psi: 1000.0
+  baseline_temp_c: 25.0
+
+risk_engine:
+  pof_weights:
+    anomaly: 0.25
+    physics: 0.25
+    degradation: 0.20
+    cascade: 0.30
+  cof_weights:
+    environmental: 0.40
+    human: 0.40
+    economic: 0.20
+  risk_tiers:
+    critical: 75
+    high: 50
+    medium: 25
+
+# IEC 61508 Safety Interlock Limits
+safety_interlock:
+  max_safe_pressure_psi: 1200.0
+  min_safe_temperature_c: -10.0
+
+# Swarm Intelligence (GNN & Mesh)
+swarm:
+  bind_port: 5555
+  neighbor_ports: [5554, 5556]
+  cascade_threat_threshold: 0.5
+  mesh_gossip_interval_sec: 1.0
