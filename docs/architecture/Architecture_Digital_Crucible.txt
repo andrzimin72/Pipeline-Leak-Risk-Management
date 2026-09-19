@@ -1,1 +1,19 @@
-
+[ NVIDIA Cosmos & Isaac Sim (Nebius Cloud) ]
+       │ Generates "Black Swan" synthetic sensor/video data
+       ▼
+[ Multi-Agent Swarm (NVIDIA NIMs on Jetson Orin) ]
+       │
+       ├──> 🕵️ Agent 1: The Sentinel (Perception)
+       │      Fuses 11 physical modalities + Cosmos synthetic context.
+       │
+       ├──> 🧠 Agent 2: The Commander (Reasoning - Nemotron)
+       │      Evaluates the crisis. Decides on a SCADA action plan.
+       │
+       └──> 🏭 Agent 3: The Operator (Execution - SCADA)
+              Translates AI decisions into OPC-UA/Modbus commands.
+       │
+       ▼
+[ The Safety Interlock (Deterministic Rule Engine) ]
+       │ Validates AI commands against hard-coded physics limits.
+       ▼
+[ Physical SCADA System (Valves, Pumps, ESDs) ]
