@@ -1,0 +1,58 @@
+# k8s/base/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pipeline-ai
+  labels:
+    app.kubernetes.io/part-of: exxonmobil-pipeline-ai
+    app.kubernetes.io/managed-by: terraform
+    tier: production
+  annotations:
+    nebius.ai/cost-center: "pipeline-integrity"
+    nebius.ai/compliance: "PHMSA,IEC61508"
+---
+# Resource Quota to prevent runaway costs
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: pipeline-quota
+  namespace: pipeline-ai
+spec:
+  hard:
+    requests.cpu: "32"
+    requests.memory: 64Gi
+    limits.cpu: "64"
+    limits.memory: 128Gi
+    pods: "100"
+    services: "20"
+---
+# Network Policy: Isolate pipeline network
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pipeline-network-isolation
+  namespace: pipeline-ai
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: exxonmobil-pipeline-ai
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: pipeline-ai
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443  # Allow HTTPS to Nebius API
+    - protocol: TCP
+      port: 8883 # Allow mTLS MQTT
