@@ -1,0 +1,30 @@
+# k8s/base/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pipeline-config
+  namespace: pipeline-ai
+data:
+  # API Configuration
+  API_LOG_LEVEL: "INFO"
+  API_WORKERS: "4"
+  API_MAX_PAYLOAD_SIZE: "1048576"
+  
+  # MQTT Configuration
+  MQTT_BROKER_HOST: "mosquitto.pipeline-ai.svc.cluster.local"
+  MQTT_BROKER_PORT: "8883"
+  MQTT_TOPIC_PREFIX: "exxonmobil/pipeline/"
+  
+  # Risk Engine Configuration
+  RISK_ENGINE_POF_WEIGHT_ANOMALY: "0.25"
+  RISK_ENGINE_POF_WEIGHT_PHYSICS: "0.25"
+  RISK_ENGINE_POF_WEIGHT_DEGRADATION: "0.20"
+  RISK_ENGINE_POF_WEIGHT_CASCADE: "0.30"
+  
+  # Safety Interlock Thresholds (IEC 61508)
+  SAFETY_MAX_PRESSURE_PSI: "1200"
+  SAFETY_MIN_TEMPERATURE_C: "-10"
+  
+  # Federated Learning
+  FL_AGGREGATION_INTERVAL_HOURS: "24"
+  FL_MIN_NODES_FOR_ROUND: "10"
