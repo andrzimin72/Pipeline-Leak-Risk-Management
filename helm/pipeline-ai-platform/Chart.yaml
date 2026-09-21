@@ -1,0 +1,42 @@
+apiVersion: v2
+name: pipeline-ai-platform
+description: ExxonMobil Physical AI Platform for Pipeline Integrity Monitoring
+type: application
+version: 1.0.0
+appVersion: "5.0.0"
+keywords:
+  - physical-ai
+  - pipeline
+  - leak-detection
+  - iot
+  - edge-computing
+  - nvidia
+  - exxonmobil
+home: https://github.com/exxonmobil/pipeline-ai-platform
+maintainers:
+  - name: Sara
+    email: sara@exxonmobil.com
+dependencies:
+  - name: api
+    version: 1.0.0
+    repository: "file://charts/api"
+    condition: api.enabled
+  - name: dashboard
+    version: 1.0.0
+    repository: "file://charts/dashboard"
+    condition: dashboard.enabled
+  - name: mosquitto
+    version: 1.0.0
+    repository: "file://charts/mosquitto"
+    condition: mosquitto.enabled
+  - name: federated-server
+    version: 1.0.0
+    repository: "file://charts/federated-server"
+    condition: federatedServer.enabled
+  - name: monitoring
+    version: 1.0.0
+    repository: "file://charts/monitoring"
+    condition: monitoring.enabled
+annotations:
+  category: "Industrial IoT"
+  licenses: "Proprietary"
