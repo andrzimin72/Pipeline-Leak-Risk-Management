@@ -1,0 +1,6 @@
+apiVersion: v2
+name: api
+description: FastAPI backend for Nebius AI Cloud
+type: application
+version: 1.0.0
+appVersion: "5.0.0"
