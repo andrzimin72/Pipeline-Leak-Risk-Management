@@ -1,0 +1,117 @@
+# monitoring/prometheus/prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+  
+  external_labels:
+    cluster: 'pipeline-ai-prod'
+    environment: 'production'
+    region: 'eu-central1'
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
+
+# Rule files
+rule_files:
+  - "/etc/prometheus/alerting-rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+  
+  # FastAPI metrics
+  - job_name: 'pipeline-api'
+    kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names: ['pipeline-ai']
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_label_app]
+      regex: pipeline-api
+      action: keep
+    - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+      action: replace
+      target_label: __metrics_path__
+      regex: (.+)
+    - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+      action: replace
+      regex: ([^:]+)(?::\d+)?;(\d+)
+      replacement: $1:$2
+      target_label: __address__
+    - source_labels: [__meta_kubernetes_namespace]
+      action: replace
+      target_label: namespace
+    - source_labels: [__meta_kubernetes_pod_name]
+      action: replace
+      target_label: pod
+  
+  # Mosquitto MQTT metrics
+  - job_name: 'mosquitto'
+    kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names: ['pipeline-ai']
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_label_app]
+      regex: mosquitto
+      action: keep
+  
+  # Edge node metrics (via pushgateway)
+  - job_name: 'edge-nodes'
+    honor_labels: true
+    static_configs:
+    - targets: ['pushgateway:9091']
+  
+  # Grafana metrics
+  - job_name: 'grafana'
+    kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names: ['monitoring']
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_label_app]
+      regex: grafana
+      action: keep
+  
+  # Node exporter (host metrics)
+  - job_name: 'node-exporter'
+    kubernetes_sd_configs:
+    - role: node
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+  
+  # Kubernetes API server
+  - job_name: 'kubernetes-apiservers'
+    kubernetes_sd_configs:
+    - role: endpoints
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: default;kubernetes;https
+  
+  # cAdvisor (container metrics)
+  - job_name: 'cadvisor'
+    kubernetes_sd_configs:
+    - role: node
+    scheme: https
+    tls_config:
+      ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    relabel_configs:
+    - source_labels: [__metrics_path__]
+      target_label: metrics_path
+      regex: (.*)
+      replacement: /metrics/cadvisor
