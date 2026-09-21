@@ -1,0 +1,110 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "edge-nodes-metrics",
+    "title": "Edge Nodes (Jetson Orin) Health",
+    "tags": ["pipeline-ai", "edge", "jetson"],
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Online Edge Nodes",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "count(edge_node_heartbeat)",
+            "legendFormat": "Online"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "Offline Nodes",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "expr": "142 - count(edge_node_heartbeat)",
+            "legendFormat": "Offline"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": "timeseries",
+        "title": "Federated Learning Rounds",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(increase(fl_rounds_completed_total[1h]))",
+            "legendFormat": "Rounds/hour"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "type": "timeseries",
+        "title": "Inference Latency by Node (TensorRT)",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(sentinel_inference_duration_seconds_bucket[5m])) by (node_id)",
+            "legendFormat": "{{node_id}} P95"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": "timeseries",
+        "title": "Safety Interlock Overrides",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "sum(increase(safety_interlock_overrides_total[1h])) by (node_id)",
+            "legendFormat": "{{node_id}}"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "type": "timeseries",
+        "title": "MQTT Messages Published by Node",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "sum(rate(mqtt_messages_published_total[5m])) by (node_id)",
+            "legendFormat": "{{node_id}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "type": "heatmap",
+        "title": "Anomaly Score Distribution",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "sum(increase(sentinel_anomaly_score_bucket[5m])) by (le)",
+            "format": "heatmap",
+            "legendFormat": "{{le}}"
+          }
+        ]
+      }
+    ]
+  }
+}
