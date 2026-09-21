@@ -1,0 +1,122 @@
+# Default values for pipeline-ai-platform
+# This is a YAML-formatted file.
+
+# Global configuration shared across all sub-charts
+global:
+  namespace: pipeline-ai
+  imageRegistry: nebiusai
+  imagePullSecrets: []
+  storageClass: nebius-network-ssd
+  
+  # Security
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+  
+  # Common labels
+  commonLabels:
+    app.kubernetes.io/part-of: exxonmobil-pipeline-ai
+    app.kubernetes.io/managed-by: helm
+  
+  # Domain configuration
+  domain: exxonmobil.nebius.cloud
+  
+  # Secrets (override via --set or external secrets operator)
+  secrets:
+    nebiusApiKey: ""
+    sapAuthToken: ""
+    sapApiUrl: "https://sap-gateway.exxonmobil.com"
+
+# Sub-chart toggles
+api:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: nebiusai/pipeline-api
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 20
+    targetCPUUtilization: 70
+  ingress:
+    enabled: true
+    host: api.pipeline.{{ .Values.global.domain }}
+  service:
+    port: 8000
+
+dashboard:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: nebiusai/pipeline-dashboard
+    tag: "1.0.0"
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  ingress:
+    enabled: true
+    host: dashboard.pipeline.{{ .Values.global.domain }}
+
+mosquitto:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: eclipse-mosquitto
+    tag: "2.0"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+  service:
+    mqttPort: 8883
+    websocketPort: 9001
+
+federatedServer:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: nebiusai/pipeline-fed-server
+    tag: "1.0.0"
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    retention: 30d
+    storageSize: 100Gi
+  grafana:
+    enabled: true
+    adminPassword: ""
+    ingress:
+      enabled: true
+      host: grafana.pipeline.{{ .Values.global.domain }}
+  alertmanager:
+    enabled: true
+    emailReceiver: pipeline-alerts@exxonmobil.com
