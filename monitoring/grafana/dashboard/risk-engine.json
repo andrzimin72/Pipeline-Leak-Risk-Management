@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "risk-engine-metrics",
+    "title": "Dynamic Risk Engine Metrics",
+    "tags": ["pipeline-ai", "risk", "compliance"],
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Critical Risk Nodes",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "pipeline_risk_critical_nodes",
+            "legendFormat": "Critical"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "type": "stat",
+        "title": "High Risk Nodes",
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "expr": "pipeline_risk_high_nodes",
+            "legendFormat": "High"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "orange", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "type": "gauge",
+        "title": "Average Network DRI",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "avg(pipeline_risk_dri)",
+            "legendFormat": "Avg DRI"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 25},
+                {"color": "orange", "value": 50},
+                {"color": "red", "value": 75}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": "timeseries",
+        "title": "Probability of Failure (PoF) by Node",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "pipeline_risk_pof by (node_id)",
+            "legendFormat": "{{node_id}}"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "type": "timeseries",
+        "title": "Consequence of Failure (CoF) by Node",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "pipeline_risk_cof by (node_id)",
+            "legendFormat": "{{node_id}}"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "type": "table",
+        "title": "Top 10 Highest Risk Nodes",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "topk(10, pipeline_risk_dri by (node_id))",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "styles": [
+          {
+            "pattern": "node_id",
+            "type": "string"
+          },
+          {
+            "pattern": "Value",
+            "type": "number",
+            "unit": "none",
+            "thresholds": ["25", "50", "75"]
+          }
+        ]
+      }
+    ]
+  }
+}
