@@ -1,0 +1,133 @@
+# monitoring/prometheus/alerting-rules.yml
+groups:
+  - name: pipeline-api-alerts
+    rules:
+    - alert: HighErrorRate
+      expr: rate(http_requests_total{job="pipeline-api",status=~"5.."}[5m]) > 0.1
+      for: 2m
+      labels:
+        severity: critical
+        team: platform
+      annotations:
+        summary: "High API error rate ({{ $value }} errors/sec)"
+        description: "Pipeline API error rate has been above 0.1/sec for 2 minutes"
+        runbook: "https://wiki.exxonmobil.com/pipeline-ai/runbooks/high-error-rate"
+    
+    - alert: HighLatency
+      expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="pipeline-api"}[5m])) > 2
+      for: 5m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "High API latency (P95: {{ $value }}s)"
+        description: "95th percentile latency is above 2 seconds"
+    
+    - alert: PodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total{namespace="pipeline-ai"}[15m]) * 60 * 5 > 0
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod {{ $labels.pod }} is crash looping"
+        description: "Pod has restarted {{ $value }} times in the last 15 minutes"
+  
+  - name: mqtt_alerts
+    rules:
+    - alert: MQTTConnectionDrop
+      expr: mosquitto_connected_clients < 10
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low MQTT client count"
+        description: "Only {{ $value }} clients connected to MQTT broker"
+    
+    - alert: MQTTMessageQueueBacklog
+      expr: mosquitto_messages_stored > 10000
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "MQTT message queue backlog"
+        description: "{{ $value }} messages stored in broker queue"
+  
+  - name: risk_engine_alerts
+    rules:
+    - alert: CriticalRiskNodes
+      expr: pipeline_risk_critical_nodes > 0
+      for: 1m
+      labels:
+        severity: critical
+        team: operations
+      annotations:
+        summary: "{{ $value }} pipeline nodes at CRITICAL risk"
+        description: "Immediate attention required for pipeline integrity"
+    
+    - alert: HighProbabilityOfFailure
+      expr: pipeline_risk_pof_average > 70
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High average Probability of Failure"
+        description: "Average PoF across nodes is {{ $value }}%"
+  
+  - name: edge_node_alerts
+    rules:
+    - alert: EdgeNodeOffline
+      expr: absent_over_time(edge_node_heartbeat{node_id=~".*"}[5m])
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Edge node {{ $labels.node_id }} is offline"
+        description: "No heartbeat received for 5 minutes"
+    
+    - alert: EdgeNodeHighCPU
+      expr: edge_node_cpu_usage_percent > 90
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Edge node {{ $labels.node_id }} high CPU"
+        description: "CPU usage at {{ $value }}% for 10 minutes"
+    
+    - alert: SafetyInterlockTriggered
+      expr: increase(safety_interlock_overrides_total[1h]) > 5
+      for: 0m
+      labels:
+        severity: critical
+        team: safety
+      annotations:
+        summary: "Multiple safety interlock overrides"
+        description: "{{ $value }} safety interlock overrides in the last hour"
+  
+  - name: infrastructure_alerts
+    rules:
+    - alert: HighMemoryUsage
+      expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory usage on {{ $labels.instance }}"
+        description: "Memory usage is at {{ $value | humanizePercentage }}"
+    
+    - alert: DiskSpaceLow
+      expr: (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"}) < 0.1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Low disk space on {{ $labels.instance }}"
+        description: "Only {{ $value | humanizePercentage }} disk space remaining"
+    
+    - alert: PostgresConnectionPoolExhausted
+      expr: pg_stat_activity_count / pg_settings_max_connections > 0.8
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "PostgreSQL connection pool nearly exhausted"
+        description: "{{ $value | humanizePercentage }} of connections in use"
