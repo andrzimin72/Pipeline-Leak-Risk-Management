@@ -1,0 +1,83 @@
+# ==============================================================================
+# Automated Backup CronJobs
+# ==============================================================================
+
+# PostgreSQL backup (hourly)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: pipeline-ai
+spec:
+  schedule: "0 * * * *"  # Every hour
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: nebiusai/backup-tools:1.0.0
+            command: ["/scripts/backup/postgres-backup.sh"]
+            env:
+            - name: PGHOST
+              value: "postgres-primary"
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+            volumeMounts:
+            - name: backup-scripts
+              mountPath: /scripts
+            - name: backup-storage
+              mountPath: /backups
+          volumes:
+          - name: backup-scripts
+            configMap:
+              name: backup-scripts
+              defaultMode: 0755
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-storage
+          restartPolicy: OnFailure
+---
+# Velero cluster backup (every 6 hours)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: velero-backup
+  namespace: pipeline-ai
+spec:
+  schedule: "0 */6 * * *"  # Every 6 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: velero-sa
+          containers:
+          - name: velero
+            image: velero/velero:v1.12.0
+            command: ["/scripts/backup/velero-backup.sh"]
+          restartPolicy: OnFailure
+---
+# Backup verification (weekly)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-verification
+  namespace: pipeline-ai
+spec:
+  schedule: "0 2 * * 0"  # Sunday 2 AM
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: velero-sa
+          containers:
+          - name: verify
+            image: nebiusai/backup-tools:1.0.0
+            command: ["/scripts/backup/verify-backup.sh"]
+          restartPolicy: OnFailure
