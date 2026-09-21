@@ -1,0 +1,31 @@
+# k8s/api/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pipeline-api-ingress
+  namespace: pipeline-ai
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-secret: "pipeline-ai/mqtt-tls-certs"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nebius.ai/waf-enabled: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.pipeline.exxonmobil.nebius.cloud
+    secretName: pipeline-api-tls
+  rules:
+  - host: api.pipeline.exxonmobil.nebius.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pipeline-api
+            port:
+              number: 8000
