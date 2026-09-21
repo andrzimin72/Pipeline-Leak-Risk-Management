@@ -1,0 +1,32 @@
+# k8s/mosquitto/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: pipeline-ai
+spec:
+  clusterIP: None  # Headless service for StatefulSet
+  ports:
+  - port: 8883
+    name: mqtt-tls
+  - port: 9001
+    name: websocket
+  selector:
+    app: mosquitto
+---
+# Load balancer for external edge access
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-lb
+  namespace: pipeline-ai
+  annotations:
+    service.beta.kubernetes.io/nebius-load-balancer-type: "network"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8883
+    targetPort: 8883
+    name: mqtt-tls
+  selector:
+    app: mosquitto
