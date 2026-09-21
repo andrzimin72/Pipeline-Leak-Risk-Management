@@ -1,0 +1,129 @@
+# k8s/api/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-api
+  namespace: pipeline-ai
+  labels:
+    app: pipeline-api
+    app.kubernetes.io/name: pipeline-api
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: exxonmobil-pipeline-ai
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: pipeline-api
+  template:
+    metadata:
+      labels:
+        app: pipeline-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: pipeline-api-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: api
+        image: nebiusai/pipeline-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: NEBIUS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nebius-api-credentials
+              key: NEBIUS_API_KEY
+        - name: SAP_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: nebius-api-credentials
+              key: SAP_AUTH_TOKEN
+        envFrom:
+        - configMapRef:
+            name: pipeline-config
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 5
+          timeoutSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /
+            port: 8000
+          failureThreshold: 30
+          periodSeconds: 2
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pipeline-api-data
+      - name: tmp
+        emptyDir:
+          sizeLimit: 1Gi
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: pipeline-api
+---
+# Service Account with minimal permissions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-api-sa
+  namespace: pipeline-ai
+  annotations:
+    nebius.ai/iam-role: "pipeline-api-role"
+---
+# Persistent Volume Claim for data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-api-data
+  namespace: pipeline-ai
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: nebius-network-ssd
+  resources:
+    requests:
+      storage: 50Gi
