@@ -1,0 +1,29 @@
+==============================================================================
+🛢️ Pipeline AI API has been deployed!
+==============================================================================
+
+{{- if .Values.ingress.enabled }}
+
+🌐 Access the API at:
+   https://{{ tpl .Values.ingress.host . }}
+
+{{- else }}
+
+🔌 Get the API URL by running:
+   kubectl get svc {{ include "api.fullname" . }} -n {{ .Values.global.namespace }}
+
+{{- end }}
+
+📊 Check pod status:
+   kubectl get pods -n {{ .Values.global.namespace }} -l app.kubernetes.io/component=api
+
+📝 View logs:
+   kubectl logs -f deployment/{{ include "api.fullname" . }} -n {{ .Values.global.namespace }}
+
+🧪 Test the API:
+   curl https://{{ tpl .Values.ingress.host . }}/
+
+⚠️  IMPORTANT: Ensure secrets are properly configured:
+   kubectl get secret {{ include "api.fullname" . }}-secrets -n {{ .Values.global.namespace }}
+
+==============================================================================
