@@ -1,0 +1,25 @@
+# Development overrides (minimal resources)
+global:
+  domain: dev.exxonmobil.nebius.cloud
+
+api:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: false
+
+mosquitto:
+  replicaCount: 1
+  persistence:
+    size: 5Gi
+
+monitoring:
+  prometheus:
+    retention: 7d
+    storageSize: 20Gi
