@@ -1,0 +1,110 @@
+# k8s/mosquitto/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mosquitto
+  namespace: pipeline-ai
+spec:
+  serviceName: mosquitto
+  replicas: 3  # HA cluster
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1883
+        fsGroup: 1883
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2.0
+        ports:
+        - containerPort: 8883
+          name: mqtt-tls
+        - containerPort: 9001
+          name: websocket
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+        readinessProbe:
+          tcpSocket:
+            port: 8883
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 8883
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: config
+          mountPath: /mosquitto/config
+        - name: certs
+          mountPath: /mosquitto/certs
+          readOnly: true
+        - name: data
+          mountPath: /mosquitto/data
+      volumes:
+      - name: config
+        configMap:
+          name: mosquitto-config
+      - name: certs
+        secret:
+          secretName: mqtt-tls-certs
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: nebius-network-ssd
+      resources:
+        requests:
+          storage: 20Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+  namespace: pipeline-ai
+data:
+  mosquitto.conf: |
+    listener 8883
+    protocol mqtt
+    
+    # mTLS Configuration
+    cafile /mosquitto/certs/ca.crt
+    certfile /mosquitto/certs/tls.crt
+    keyfile /mosquitto/certs/tls.key
+    require_certificate true
+    use_identity_as_username true
+    
+    # Performance tuning
+    max_connections 10000
+    max_inflight_messages 200
+    max_queued_messages 10000
+    
+    # Persistence
+    persistence true
+    persistence_location /mosquitto/data/
+    
+    # Logging
+    log_dest stdout
+    log_type all
+    
+    # ACL (Access Control List)
+    acl_file /mosquitto/config/acl.conf
+  acl.conf: |
+    # Edge nodes can publish to their own topics
+    pattern write exxonmobil/pipeline/%u/
+    # Edge nodes can read from their own topics
+    pattern read exxonmobil/pipeline/%u/
+    # All nodes can read shared topics
+    topic read exxonmobil/pipeline/shared/#
