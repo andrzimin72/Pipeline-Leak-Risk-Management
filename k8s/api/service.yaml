@@ -1,0 +1,17 @@
+# k8s/api/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipeline-api
+  namespace: pipeline-ai
+  labels:
+    app: pipeline-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: pipeline-api
