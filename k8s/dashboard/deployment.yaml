@@ -1,0 +1,95 @@
+# k8s/dashboard/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-dashboard
+  namespace: pipeline-ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pipeline-dashboard
+  template:
+    metadata:
+      labels:
+        app: pipeline-dashboard
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: dashboard
+        image: nebiusai/pipeline-dashboard:latest
+        ports:
+        - containerPort: 8501
+          name: http
+        env:
+        - name: API_BASE_URL
+          value: "http://pipeline-api:8000"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+          readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: pipeline-api-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipeline-dashboard
+  namespace: pipeline-ai
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8501
+    targetPort: 8501
+  selector:
+    app: pipeline-dashboard
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pipeline-dashboard-ingress
+  namespace: pipeline-ai
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: dashboard-basic-auth
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - dashboard.pipeline.exxonmobil.nebius.cloud
+    secretName: dashboard-tls
+  rules:
+  - host: dashboard.pipeline.exxonmobil.nebius.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: pipeline-dashboard
+            port:
+              number: 8501
