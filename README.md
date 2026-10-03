@@ -10,21 +10,32 @@ Secondary goals include minimizing financial loss, ensuring strict regulatory co
 
 ## 3. What key tasks does it address?
 a) Real-time Anomaly Detection: Identifying leaks, corrosion, third-party interference, and mechanical failures instantly.
+
 b) Autonomous Physical Mitigation: Safely isolating a damaged pipeline segment (closing valves) without waiting for human intervention.
+
 c) Predictive Risk Assessment: Calculating the Probability of Failure (PoF) and Consequence of Failure (CoF) to predict where the next failure will occur.
+
 d) Regulatory and Maintenance Automation: Automatically generating legally compliant incident reports (PHMSA) and dispatching maintenance crews via enterprise systems (SAP/Maximo).
 
 ## 4. What are its main functions?
 a) 11-Modal Sensor Fusion: Combining Acoustic, Pressure, Coriolis, Fiber DTS, Temperature, Soil Moisture, Capacitance, Vibration, Corrosion, Flow, and Physics Residual data.
+
 b) Physics-Informed AI (PhysicsNeMo): Using fluid dynamics equations to detect anomalies that pure data-driven AI might miss.
+
 c) Multi-Agent Reasoning: A Swarm of AI agents (Sentinel for perception, Commander for reasoning, Operator for execution).
+
 d) Deterministic Safety Interlock: A hard-coded, non-AI rule engine (IEC 61508 compliant) that overrides the AI if a physical action would be dangerous.
+
 e) Swarm Intelligence: Edge-to-edge communication via ZeroMQ and Graph Neural Networks (GNN) to predict cascading failures.
+
 f) Federated Learning: Training global AI models across thousands of edge nodes without ever exposing proprietary sensor data to the cloud.
 
 ## 5. In which areas of the oil and gas industry can this software be used?
 a) Midstream: Long-distance transmission pipelines (crude oil, natural gas, NGLs), pumping stations, and compressor stations. (This is the primary use case).
+
 b) Upstream: Flowlines connecting wellheads to gathering stations, especially in remote or harsh environments.
+
 c) Downstream: Refinery piping networks, tank farms, and loading/unloading terminals.
+
 d) Emerging Energy: Hydrogen pipelines, Carbon Capture and Storage (CCUS) transport networks, and ammonia transport.
 
