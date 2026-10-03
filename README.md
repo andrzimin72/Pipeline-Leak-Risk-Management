@@ -70,20 +70,26 @@ To justify the CapEx of deploying NVIDIA Jetson Orin nodes and 11 sensors per se
 
 a) Risk Mitigation (Avoided Catastrophic Costs)
 Spill Cleanup and Fines: The average cost of a major crude oil spill (cleanup, environmental fines, lost product, litigation) is $15 million to $50 million+. According to PHMSA (US Pipeline and Hazardous Materials Safety Administration), the average cost of a hazardous liquid pipeline incident is $1.5 million. However, catastrophic spills (like the 2010 Enbridge Kalamazoo River spill) cost over $1.2 billion.
+
 Impact: Preventing just one major spill pays for the platform's deployment across the entire network for a decade.
+
 Reduced False Alarm Costs: Legacy fiber-optic systems can trigger dozens of false alarms a month. Each false alarm requires dispatching a physical inspection crew (helicopter/truck), costing $5,000 - $15,000 per dispatch. Our 11-modal fusion reduces false positives by an estimated 80-90%, saving millions in OpEx annually.
 
 b) Operational Efficiency (OpEx Reduction)
 Reduced Downtime: A major pipeline shutdown costs between $500,000 and $2 million per day in lost throughput and contractual penalties. By isolating a leak in 5 seconds rather than 30 minutes, we reduce the spill volume by 95%, turning a 3-day regulatory shutdown into a 4-hour localized repair.
+
 Risk-Based Inspection (RBI): Currently, operators spend millions sending "Smart Pigs" down the pipe every 3 years, regardless of need. Our Dynamic Risk Engine tells them exactly which 5% of the pipe needs inspection. This can reduce ILI (In-Line Inspection) OPEX by 20% to 30%.
+
 Downtime Minimization: By isolating a leak in 30 seconds rather than 20 minutes, the volume of lost product is minimized from hundreds of barrels to less than 2 barrels. Furthermore, faster isolation means faster pressure stabilization and a quicker return to normal flow.
 
 c) Regulatory and ESG Impact (Intangible but Critical Value)
 PHMSA Compliance: In the US, the Pipeline and Hazardous Materials Safety Administration (PHMSA) imposes massive fines for late or inaccurate reporting. Our automated, Nemotron-generated PHMSA reports ensure 100% compliance, eliminating regulatory risk.
+
 ESG and Carbon Credits: Methane and crude leaks are massive contributors to Scope 1 greenhouse gas emissions. By preventing micro-leaks and ruptures, the platform directly improves the company's ESG rating, which lowers their cost of capital and protects them from impending carbon taxes.
 
 d) Insurance and Regulatory Benefits
 Insurance Premiums: Insurers (like Allianz or AIG) offer premium discounts for operators with advanced, automated leak detection and rapid shutdown systems. Implementing this platform can reduce liability insurance premiums by 10% to 15%.
+
 Regulatory Compliance: PHMSA and the EPA are increasingly mandating faster leak detection and automated shutdown capabilities (e.g., the 2022 PHMSA Mega Rule). Our platform ensures compliance out-of-the-box, avoiding potential fines of $200,000+ per day for non-compliance.
 
 e) The "Shadow Mode" Trust Builder
