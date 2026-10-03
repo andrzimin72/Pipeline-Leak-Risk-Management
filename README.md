@@ -101,7 +101,7 @@ e) The "Shadow Mode" Trust Builder
 Financial Impact: One of the biggest hidden costs in AI adoption is the "trust gap." Operators don't trust AI to close valves. By deploying our Shadow Mode (where the AI logs what it would do, and humans verify it), we reduce the change-management friction, accelerating time-to-value by months.
 
 ### 9. Project demonstration
-This project accompany with a Python demonstration script. The ExxonMobil Mustang Oil Pipeline is a major oil pipeline jointly operated by ExxonMobil and Enbridge. It plays an important role in oil transportation in the United States.
+This project accompany with a Python demonstration script. The ExxonMobil/Enbridge Mustang Oil Pipeline is a major oil pipeline jointly operated by ExxonMobil and Enbridge. It plays an important role in oil transportation in the United States.
 
 The total length of the Mustang Oil Pipeline is 215 miles (346 kilometers). This oil pipeline became a vital link in the logistics chain transporting oil from the western United States to refineries and export terminals. Together with other projects by ExxonMobil and Enbridge (such as Pegasus), it formed an extensive pipeline network connecting the United States and Canada.
 
