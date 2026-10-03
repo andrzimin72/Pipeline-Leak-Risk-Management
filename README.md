@@ -39,3 +39,30 @@ c) Downstream: Refinery piping networks, tank farms, and loading/unloading termi
 
 d) Emerging Energy: Hydrogen pipelines, Carbon Capture and Storage (CCUS) transport networks, and ammonia transport.
 
+### 6. For which tasks is it best suited, and for which is it NOT recommended?
+#### 6.1. Best Suited For:
+a) High Consequence Areas (HCAs): Pipelines crossing rivers, near population centers, or in environmentally sensitive zones.
+
+b) Remote/Unmanned Assets: Locations where human response time is measured in hours, not seconds.
+
+c) Hazardous Materials: Transporting heavy crude, sour gas (H2S), or high-pressure natural gas where a rupture is catastrophic.
+
+#### 6.2. Not Recommended For:
+a) Low-Risk/Low-Pressure Systems: Municipal water lines or low-pressure irrigation. The cost of the hardware (Jetson, 11 sensors) vastly outweighs the risk of a leak.
+
+b) Highly Dynamic Multiphase Flow: If a pipeline has extreme "slugging" (rapid, chaotic alternations of gas and liquid), the PhysicsNeMo fluid dynamics model would require massive, highly specific retraining before deployment.
+
+c) Legacy Infrastructure without Upgrades: If the physical pipeline lacks the basic sensors (like fiber optics or Coriolis meters) or automated valves, the software cannot perform its physical mitigation functions.
+
+### 7. What are the limitations regarding its use?
+a) Sensor Dependency (Garbage In, Garbage Out): The AI is only as good as the physical sensors. If a pressure transmitter is poorly calibrated or a fiber optic cable is cut by a backhoe, the system's perception is blinded.
+
+b) Regulatory Certification Lag: While the software is ready, getting autonomous SCADA control legally approved by local regulators (like PHMSA in the US) requires a lengthy, rigorous Safety Integrity Level (SIL 2/3) certification process. It cannot be turned on "live" on day one.
+
+c) High Initial CapEx: Deploying 11 sensors and an NVIDIA Jetson Orin at every node is expensive. It requires a strong ROI justification (which the Risk Engine provides).
+
+d) Edge Compute Limits: The Jetson Orin is powerful, but it is not a cloud GPU. Extremely massive global models must be distilled or quantized (via TensorRT) to run locally.
+
+e) Cloud Dependency for Enterprise Features: While the edge can survive 72 hours offline for safety, features like SAP work order generation, Federated Learning aggregation, and Nemotron LLM reasoning require cloud connectivity.
+
+
