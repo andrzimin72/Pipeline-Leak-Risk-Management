@@ -180,3 +180,9 @@ c) Watch the Streamlit Dashboard (localhost:8501). You should see:
 - The 11-Modal Radar Chart spike;
 - The Risk Heatmap node turn Red;
 - A new SAP Work Order appear in the "Autonomous Actions" tab.
+
+For deeper technical details, refer to the companion documents in the docs/ directory:
+- Architecture: docs/architecture/ (C4 Models and Network Topology);
+- Installation, Configuration, and Quick Start Guide;
+- Technical Whitepaper: Autonomous Physical AI Platform for Critical Pipeline Infrastructure Integrity Management.
+
