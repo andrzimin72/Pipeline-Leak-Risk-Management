@@ -175,7 +175,7 @@ Select Option 1 for a standard AI success scenario. Watch the terminal output si
 #### Step 3: Inject a Live Test Event (Optional)
 To test the live Docker Compose stack with synthetic data:
 
-a) Open a new terminal.
+a) Open a new terminal;
 
 b) Run the Cosmos Black Swan Generator:
 bash
