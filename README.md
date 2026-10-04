@@ -65,42 +65,7 @@ d) Edge Compute Limits: The Jetson Orin is powerful, but it is not a cloud GPU. 
 
 e) Cloud Dependency for Enterprise Features: While the edge can survive 72 hours offline for safety, features like SAP work order generation, Federated Learning aggregation, and Nemotron LLM reasoning require cloud connectivity.
 
-### 8. Economic and Financial Impact (The ROI)
-To justify the CapEx of deploying NVIDIA Jetson Orin nodes and 11 sensors per segment, we must look at the financial impact. Here are the industry-standard metrics we can use in a business case:
-
-a) Risk Mitigation (Avoided Catastrophic Costs)
-
-Spill Cleanup and Fines: The average cost of a major crude oil spill (cleanup, environmental fines, lost product, litigation) is $15 million to $50 million+. According to PHMSA (US Pipeline and Hazardous Materials Safety Administration), the average cost of a hazardous liquid pipeline incident is $1.5 million. However, catastrophic spills (like the 2010 Enbridge Kalamazoo River spill) cost over $1.2 billion.
-
-Impact: Preventing just one major spill pays for the platform's deployment across the entire network for a decade.
-
-Reduced False Alarm Costs: Legacy fiber-optic systems can trigger dozens of false alarms a month. Each false alarm requires dispatching a physical inspection crew (helicopter/truck), costing $5,000 - $15,000 per dispatch. Our 11-modal fusion reduces false positives by an estimated 80-90%, saving millions in OpEx annually.
-
-b) Operational Efficiency (OpEx Reduction)
-
-Reduced Downtime: A major pipeline shutdown costs between $500,000 and $2 million per day in lost throughput and contractual penalties. By isolating a leak in 5 seconds rather than 30 minutes, we reduce the spill volume by 95%, turning a 3-day regulatory shutdown into a 4-hour localized repair.
-
-Risk-Based Inspection (RBI): Currently, operators spend millions sending "Smart Pigs" down the pipe every 3 years, regardless of need. Our Dynamic Risk Engine tells them exactly which 5% of the pipe needs inspection. This can reduce ILI (In-Line Inspection) OPEX by 20% to 30%.
-
-Downtime Minimization: By isolating a leak in 30 seconds rather than 20 minutes, the volume of lost product is minimized from hundreds of barrels to less than 2 barrels. Furthermore, faster isolation means faster pressure stabilization and a quicker return to normal flow.
-
-c) Regulatory and ESG Impact (Intangible but Critical Value)
-
-PHMSA Compliance: In the US, the Pipeline and Hazardous Materials Safety Administration (PHMSA) imposes massive fines for late or inaccurate reporting. Our automated, Nemotron-generated PHMSA reports ensure 100% compliance, eliminating regulatory risk.
-
-ESG and Carbon Credits: Methane and crude leaks are massive contributors to Scope 1 greenhouse gas emissions. By preventing micro-leaks and ruptures, the platform directly improves the company's ESG rating, which lowers their cost of capital and protects them from impending carbon taxes.
-
-d) Insurance and Regulatory Benefits
-
-Insurance Premiums: Insurers (like Allianz or AIG) offer premium discounts for operators with advanced, automated leak detection and rapid shutdown systems. Implementing this platform can reduce liability insurance premiums by 10% to 15%.
-
-Regulatory Compliance: PHMSA and the EPA are increasingly mandating faster leak detection and automated shutdown capabilities (e.g., the 2022 PHMSA Mega Rule). Our platform ensures compliance out-of-the-box, avoiding potential fines of $200,000+ per day for non-compliance.
-
-e) The "Shadow Mode" Trust Builder
-
-Financial Impact: One of the biggest hidden costs in AI adoption is the "trust gap." Operators don't trust AI to close valves. By deploying our Shadow Mode (where the AI logs what it would do, and humans verify it), we reduce the change-management friction, accelerating time-to-value by months.
-
-### 9. Project demonstration
+### 8. Project demonstration
 This project accompany with a Python demonstration script. The ExxonMobil/Enbridge Mustang Oil Pipeline is a major oil pipeline jointly operated by ExxonMobil and Enbridge. It plays an important role in oil transportation in the United States.
 
 The total length of the Mustang Oil Pipeline is 215 miles (346 kilometers). This oil pipeline became a vital link in the logistics chain transporting oil from the western United States to refineries and export terminals. Together with other projects by ExxonMobil and Enbridge (such as Pegasus), it formed an extensive pipeline network connecting the United States and Canada.
@@ -108,3 +73,5 @@ The total length of the Mustang Oil Pipeline is 215 miles (346 kilometers). This
 Key Characteristics Mustang Oil Pipeline: The pipeline begins in Lockport, Illinois, where it connects to the Enbridge Lakehead system, and extends to the Patoka terminal, also in Illinois. It is primarily designed to transport heavy crude oil. Pipe diameter is 18 inches. The initial design capacity was approximately 91,000 barrels per day (bpd), with 88,000 bpd committed to specific shipments. 
 
 File: /demo_mustang_oil_pipeline.py.
+
+### 9. 
