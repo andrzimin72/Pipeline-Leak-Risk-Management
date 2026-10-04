@@ -176,7 +176,7 @@ b) Run the Cosmos Black Swan Generator:
 bash
    python cloud/cosmos_black_swan_generator.py
 
-c) Watch the Streamlit Dashboard (localhost: 8501). You should see:
+c) Watch the Streamlit Dashboard (localhost:8501). You should see:
 - The 11-Modal Radar Chart spike;
 - The Risk Heatmap node turn Red;
 - A new SAP Work Order appear in the "Autonomous Actions" tab.
