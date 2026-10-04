@@ -79,24 +79,24 @@ File: /demo_mustang_oil_pipeline.py.
 This is the fastest way to spin up the entire stack (API, Dashboard, MQTT, Database, and Edge Simulator) on a single machine.
 
 A.1. Clone the Repository:
-bash
+```
    git clone https://github.com/pipeline-ai-platform.git
    cd pipeline-ai-platform
 
 A.2. Configure Environment Variables:
 Copy the example environment file and update it with your local or mock credentials:
-bash
+```
    cp .env.example .env
    #Edit .env with your preferred text editor
 
 A.3. Start the Platform:
 Use the provided Makefile to build and start all services in the background:
-bash
+```
    make up
 Alternatively, run docker-compose up --build -d directly.
 
 A.4. Verify Services:
-bash
+```
    docker-compose ps
 Ensure all containers (api, dashboard, postgres, mosquitto) show a healthy or running status.
 
@@ -104,14 +104,14 @@ Ensure all containers (api, dashboard, postgres, mosquitto) show a healthy or ru
 For deploying to the Nebius AI Cloud or an on-premise K8s cluster.
 
 B.1. Initialize Terraform (Infrastructure):
-bash
+```
    cd terraform
    terraform init
    terraform plan -var-file=environments/prod.tfvars
    terraform apply -var-file=environments/prod.tfvars
 
 B.2. Deploy via Helm
-bash
+```
    cd ../helm/pipeline-ai-platform
    helm dependency build
    
@@ -125,11 +125,11 @@ bash
 Deploying the Multi-Agent system to a physical pipeline node.
 
 C.1. Build the Edge Image:
-bash
+```
    docker build -t nebiusai/pipeline-edge:latest -f Dockerfile.edge .
 
 C.2. Run the Edge Container:
-bash
+```
    docker run -d \
      --name pipeline-edge-042 \
      --runtime nvidia \
@@ -159,7 +159,7 @@ Check: The Swagger UI should load, showing all available endpoints (/api/v1/aler
 
 #### Step 2: Run the Executive Demonstration
 To validate the core logic without needing physical hardware, run the interactive demo script:
-bash
+```
 # Ensure dependencies are installed
 pip install fpdf2
 
