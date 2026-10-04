@@ -95,11 +95,14 @@ A.3. Start the Platform:
 Use the provided Makefile to build and start all services in the background:
 ```
    make up
+```
+
 Alternatively, run docker-compose up --build -d directly.
 
 A.4. Verify Services:
 ```
    docker-compose ps
+```
 Ensure all containers (api, dashboard, postgres, mosquitto) show a healthy or running status.
 
 #### Scenario B: Production Deployment (Kubernetes via Helm)
@@ -132,6 +135,7 @@ Deploying the Multi-Agent system to a physical pipeline node.
 C.1. Build the Edge Image:
 ```
    docker build -t nebiusai/pipeline-edge:latest -f Dockerfile.edge .
+```
 
 C.2. Run the Edge Container:
 ```
