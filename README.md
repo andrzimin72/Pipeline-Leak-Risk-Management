@@ -83,20 +83,17 @@ A.1. Clone the Repository:
    git clone https://github.com/pipeline-ai-platform.git
    cd pipeline-ai-platform
 ```
-
 A.2. Configure Environment Variables:
 Copy the example environment file and update it with your local or mock credentials:
 ```
    cp .env.example .env
    #Edit .env with your preferred text editor
 ```
-
 A.3. Start the Platform:
 Use the provided Makefile to build and start all services in the background:
 ```
    make up
 ```
-
 Alternatively, run docker-compose up --build -d directly.
 
 A.4. Verify Services:
@@ -115,7 +112,6 @@ B.1. Initialize Terraform (Infrastructure):
    terraform plan -var-file=environments/prod.tfvars
    terraform apply -var-file=environments/prod.tfvars
 ```
-
 B.2. Deploy via Helm
 ```
    cd ../helm/pipeline-ai-platform
@@ -136,7 +132,6 @@ C.1. Build the Edge Image:
 ```
    docker build -t nebiusai/pipeline-edge:latest -f Dockerfile.edge .
 ```
-
 C.2. Run the Edge Container:
 ```
    docker run -d \
@@ -150,7 +145,6 @@ C.2. Run the Edge Container:
      -e NODE_ID=JETSON-NODE-042 \
      nebiusai/pipeline-edge:latest
 ```
-
 ### 10. Quick Start & Validation
 Once the platform is running, follow these steps to validate the installation and see the system in action.
 
@@ -175,8 +169,8 @@ pip install fpdf2
 
 # Run the demo
 python demo_mustang_oil_pipeline.py
-Select Option 1 for a standard AI success scenario. Watch the terminal output simulate the 30-second save, and verify that a PDF report is generated in your root directory.
 ```
+Select Option 1 for a standard AI success scenario. Watch the terminal output simulate the 30-second save, and verify that a PDF report is generated in your root directory.
 
 ##### Step 3: Inject a Live Test Event (Optional)
 To test the live Docker Compose stack with synthetic data:
