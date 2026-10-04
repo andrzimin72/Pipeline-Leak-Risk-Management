@@ -182,7 +182,7 @@ c) Watch the Streamlit Dashboard (localhost:8501). You should see:
 - A new SAP Work Order appear in the "Autonomous Actions" tab.
 
 For deeper technical details, refer to the companion documents in the docs/ directory:
-- Architecture: docs/architecture/ (C4 Models and Network Topology);
-- Installation, Configuration, and Quick Start Guide;
-- Technical Whitepaper: Autonomous Physical AI Platform for Critical Pipeline Infrastructure Integrity Management.
+- Architecture, C4 Models and Network Topology (docs/architecture/);
+- Installation, Configuration, and Quick Start Guide (docs/instructions/);
+- Technical Whitepaper: Autonomous Physical AI Platform for Critical Pipeline Infrastructure Integrity Management (docs/instructions/).
 
