@@ -146,11 +146,14 @@ Once the platform is running, follow these steps to validate the installation an
 
 #### Step 1: Access the Dashboards
 Open your web browser and navigate to the following URLs (if running locally):
+
 a) Executive Dashboard (Streamlit): http://localhost:8501
 Check: Verify the "System Status" sidebar shows active nodes and the Risk Heatmap is rendering.
+
 b) Monitoring (Grafana): http://localhost:3000
 Credentials: admin / (your GRAFANA_ADMIN_PASSWORD).
 Check: Open the "Pipeline API Metrics" dashboard. You should see live request rates and latency graphs.
+
 c) Cloud API (FastAPI Docs): http://localhost:8000/docs
 Check: The Swagger UI should load, showing all available endpoints (/api/v1/alerts, /api/v1/risk/nodes, etc.).
 
@@ -166,10 +169,13 @@ Select Option 1 for a standard AI success scenario. Watch the terminal output si
 
 ##### Step 3: Inject a Live Test Event (Optional)
 To test the live Docker Compose stack with synthetic data:
+
 a) Open a new terminal.
+
 b) Run the Cosmos Black Swan Generator:
 bash
    python cloud/cosmos_black_swan_generator.py
+
 c) Watch the Streamlit Dashboard (localhost: 8501). You should see:
 - The 11-Modal Radar Chart spike;
 - The Risk Heatmap node turn Red;
