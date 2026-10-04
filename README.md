@@ -172,7 +172,7 @@ python demo_mustang_oil_pipeline.py
 ```
 Select Option 1 for a standard AI success scenario. Watch the terminal output simulate the 30-second save, and verify that a PDF report is generated in your root directory.
 
-##### Step 3: Inject a Live Test Event (Optional)
+#### Step 3: Inject a Live Test Event (Optional)
 To test the live Docker Compose stack with synthetic data:
 
 a) Open a new terminal.
