@@ -94,8 +94,9 @@ Use the provided Makefile to build and start all services in the background:
 ```
 Alternatively, run: 
 ```
-docker-compose up --build -d directly.
+docker-compose up --build -d
 ```
+directly.
 A.4. Verify Services:
 ```
    docker-compose ps
