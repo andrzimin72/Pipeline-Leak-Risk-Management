@@ -97,6 +97,7 @@ Alternatively, run:
 docker-compose up --build -d
 ```
 directly.
+
 A.4. Verify Services:
 ```
    docker-compose ps
