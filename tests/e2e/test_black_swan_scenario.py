@@ -2,8 +2,7 @@
 """
 End-to-end scenario test: "Black Swan" cascading failure.
 Simulates the full pipeline:
-  Sensor Anomaly → Sentinel → Commander → Safety Interlock → Risk Engine → SAP Work Order
-
+Sensor Anomaly → Sentinel → Commander → Safety Interlock → Risk Engine → SAP Work Order
 Validates that the entire chain reacts correctly to a critical event.
 """
 
