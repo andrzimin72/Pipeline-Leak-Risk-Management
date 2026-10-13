@@ -1,8 +1,8 @@
 # edge/agents/operator_agent.py
 """
 Operator Agent (SCADA Translator).
-Translates high-level SCADACommands into low-level Modbus TCP / OPC-UA payloads.
-Compliant with IEC 62443 Industrial Cybersecurity standards.
+Translates high-level SCADACommands into low-level Modbus TCP / OPC-UA Payloads.
+Compliant with IEC 62443 Industrial Cybersecurity Standards.
 """
 
 import time
@@ -16,7 +16,7 @@ from typing import Dict
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - [OPERATOR] - %(levelname)s - %(message)s")
 logger = logging.getLogger("OperatorAgent")
 
-# Modbus Register Map for ExxonMobil Pipeline Node 042
+# Modbus Register Map for Pipeline Node 042
 MODBUS_MAP = {
     "ESDV_041_CLOSE_COIL": 0x0001,
     "ESDV_043_CLOSE_COIL": 0x0002,
