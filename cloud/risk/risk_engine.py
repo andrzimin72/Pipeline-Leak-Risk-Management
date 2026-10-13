@@ -2,7 +2,7 @@
 """
 Dynamic Risk Scoring Engine.
 Calculates real-time Probability of Failure (PoF) and Consequence of Failure (CoF)
-to generate a Dynamic Risk Index (DRI) for pipeline segments.
+to generate a Dynamic Risk Index (DRI) for Pipeline Segments.
 Aligned with API 581 and ASME B31.8S Risk-Based Inspection (RBI) standards.
 """
 
@@ -176,6 +176,6 @@ if __name__ == "__main__":
     logger.info("\n--- SCENARIO 2: Critical Risk ---")
     metrics_2 = SensorMetrics(anomaly_score=0.85, physics_residual=0.70, corrosion_rate=0.6, vibration_level=0.8, cascade_threat=0.9)
     context_2 = GISContext(population_density_score=0.9, environmental_sensitivity=0.95, economic_value_score=0.8)
-    assessment_2 = engine.assess_risk("NODE-042", metrics_2, context_2)
+    assessment_2 = engine.assess_risk("NODE-043", metrics_2, context_2)
     logger.info(f"Result: {assessment_2.risk_tier} (DRI: {assessment_2.dynamic_risk_index})")
     logger.info(f"Mitigation Plan: {assessment_2.mitigation_plan}")
