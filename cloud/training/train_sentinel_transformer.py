@@ -1,7 +1,7 @@
 # cloud/training/train_sentinel_transformer.py
 """
 PyTorch Training Script for the Sentinel Transformer Autoencoder.
-Trains exclusively on NORMAL pipeline data to learn physical correlations.
+Trains exclusively on NORMAL Pipeline data to learn physical correlations.
 """
 
 import os
