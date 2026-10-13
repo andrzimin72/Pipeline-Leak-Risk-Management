@@ -1,7 +1,7 @@
 # edge/agents/sentinel_agent.py
 """
 Agent 1: The Sentinel (Perception & Anomaly Detection).
-Production-ready Edge Agent supporting both PyTorch and TensorRT inference.
+Production-ready Edge Agent supporting both PyTorch and TensorRT Inference.
 Optimized for NVIDIA Jetson Orin (Edge Deployment).
 """
 
@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - [SENTINEL] - %(lev
 logger = logging.getLogger("SentinelAgent")
 
 # ==============================================================================
-# 1. PyTorch Transformer Architecture (Kept for training & fallback)
+# 1. PyTorch Transformer Architecture (Kept for Training & Fallback)
 # ==============================================================================
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model: int, max_len: int = 100):
