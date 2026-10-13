@@ -1,6 +1,6 @@
 # tests/conftest.py
 """
-Shared pytest fixtures for the Pipeline Leak Risk Management Physical AI Platform test suite.
+Shared Pytest Fixtures for the Pipeline Leak Risk Management Physical AI Platform Test Suite.
 """
 
 import os
