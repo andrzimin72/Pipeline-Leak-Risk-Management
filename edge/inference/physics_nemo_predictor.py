@@ -1,7 +1,7 @@
 # edge/inference/physics_nemo_predictor.py
 """
 NVIDIA PhysicsNeMo Edge Predictor.
-Calculates Physics-Informed Residuals for predictive leak detection.
+Calculates Physics-Informed Residuals for Predictive Leak Detection.
 """
 
 import time
