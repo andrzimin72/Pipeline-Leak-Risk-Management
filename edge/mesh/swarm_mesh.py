@@ -1,7 +1,7 @@
 # edge/mesh/swarm_mesh.py
 """
 Edge-to-Edge Mesh Communication Layer.
-Enables decentralized, ultra-low-latency "whispering" between Jetson nodes 
+Enables decentralized, ultra-low-latency "whispering" between Jetson Nodes 
 using ZeroMQ (ZMQ) to share SitReps and Physics States.
 """
 
