@@ -68,7 +68,7 @@ def compile_to_tensorrt(onnx_path):
     try:
         import tensorrt as trt
     except ImportError:
-        print("❌ Error: TensorRT is not installed. Please install tensorrt on your GPU machine.")
+        print("❌ Error: TensorRT is not installed. Please install TensorRT on your GPU Machine.")
         print("   Alternatively, use the command line tool: trtexec --onnx=... --fp16 --saveEngine=...")
         return None
 
