@@ -2,7 +2,7 @@
 """
 Prescriptive Mitigation Planner.
 Translates AI Risk Assessments into structured SAP PM / IBM Maximo 
-Notifications and Work Orders. Closes the loop between AI and the human workforce.
+Notifications and Work Orders. Closes the loop between AI and the Human Workforce.
 """
 
 import time
@@ -20,7 +20,7 @@ logger = logging.getLogger("MitigationPlanner")
 # ==============================================================================
 # Maps Edge Node IDs to SAP Functional Locations and Equipment IDs
 ASSET_REGISTRY = {
-    "NODE-042": {"func_loc": "FL-PIPE-SEC4-042", "equip_id": "EQ-PIPE-042", "work_center": "WC-MAINT-04"},
+    "NODE-043": {"func_loc": "FL-PIPE-SEC4-043", "equip_id": "EQ-PIPE-043", "work_center": "WC-MAINT-04"},
     "NODE-045": {"func_loc": "FL-PIPE-SEC5-045", "equip_id": "EQ-PIPE-045", "work_center": "WC-MAINT-05"},
 }
 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     # Scenario 1: Critical Risk (Auto-Approved Work Order)
     logger.info("--- SCENARIO 1: Critical Risk (Auto-Approve) ---")
     wo_1 = planner.generate_work_order(
-        node_id="NODE-042",
+        node_id="NODE-043",
         dri=82.5,
         risk_tier="CRITICAL",
         mitigation_plan=[
