@@ -1,7 +1,7 @@
 # edge/ai/cascade_gnn.py
 """
 Cascade Graph Neural Network (GNN).
-Models the pipeline as a mathematical graph to predict spatial-temporal cascading failures.
+Models the Pipeline as a Mathematical Graph to predict spatial-temporal cascading failures.
 Implemented in pure PyTorch for seamless NVIDIA Jetson Orin deployment.
 """
 
