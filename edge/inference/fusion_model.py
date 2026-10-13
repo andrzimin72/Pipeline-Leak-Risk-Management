@@ -1,7 +1,7 @@
 # edge/inference/fusion_model.py
 """
 Edge Multi-Agent Pipeline Orchestrator with Swarm Intelligence.
-Ingests 10 raw MQTT sensor streams + Cosmos Context, calculates the 11th PhysicsNeMo residual,
+Ingests 10 raw MQTT sensor streams + Cosmos Context, calculates the 11th PhysicsNeMo Residual,
 normalizes the data, feeds the Multi-Agent Pipeline, and utilizes Edge-to-Edge Mesh GNNs 
 for pre-emptive cascading failure prediction.
 """
