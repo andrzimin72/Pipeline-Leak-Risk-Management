@@ -1,7 +1,7 @@
 # cloud/federated_server.py
 """
 Nebius Cloud Federated Aggregation Server.
-Receives weight updates from edge nodes and computes the new Global Model.
+Receives weight updates from Edge Nodes and Computes the New Global Model.
 """
 
 import numpy as np
