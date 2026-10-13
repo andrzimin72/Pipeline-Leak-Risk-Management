@@ -1,6 +1,6 @@
 # shared/constants.py
 """
-Global constants for the Pipeline Leak Risk Management Physical AI Platform.
+Global Constants for the Pipeline Leak Risk Management Physical AI Platform.
 10-Modal Sensor Fusion for Pipeline Integrity Management.
 """
 
