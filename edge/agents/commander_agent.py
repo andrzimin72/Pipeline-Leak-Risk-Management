@@ -3,7 +3,7 @@
 Nemotron Commander Agent & Deterministic Safety Interlock.
 Translates AI SitReps into safe, validated SCADA commands and 
 executes them via the Operator Agent (SCADA Translator).
-Compliant with IEC 61508 functional safety and IEC 62443 cybersecurity standards.
+Compliant with IEC 61508 Functional Safety and IEC 62443 Cybersecurity Standards.
 """
 
 import time
@@ -53,7 +53,7 @@ class SCADACommand:
 class SafetyInterlock:
     """
     Hard-coded, deterministic rule engine. 
-    Compliant with IEC 61508 / IEC 61511 functional safety standards.
+    Compliant with IEC 61508 / IEC 61511 Functional Safety Standards.
     """
     MAX_SAFE_PRESSURE_PSI = 1200.0
     MIN_SAFE_TEMPERATURE_C = -10.0
