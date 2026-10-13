@@ -1,7 +1,7 @@
 # tests/unit/test_mitigation_planner.py
 """
 Unit tests for the Prescriptive Mitigation Planner.
-Validates AI → SAP/Maximo work order translation.
+Validates AI → SAP/Maximo Work Order Translation.
 """
 
 import pytest
