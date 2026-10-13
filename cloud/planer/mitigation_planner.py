@@ -162,7 +162,7 @@ if __name__ == "__main__":
     # Scenario 1: Critical Risk (Auto-Approved Work Order)
     logger.info("--- SCENARIO 1: Critical Risk (Auto-Approve) ---")
     wo_1 = planner.generate_work_order(
-        node_id="NODE-043",
+        node_id="NODE-042",
         dri=82.5,
         risk_tier="CRITICAL",
         mitigation_plan=[
