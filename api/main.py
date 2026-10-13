@@ -1,7 +1,7 @@
 # api/main.py
 """
 FastAPI Backend for Nebius AI Cloud.
-Central orchestrator for 11-modal telemetry, Dynamic Risk Scoring, 
+Central Orchestrator for 11-modal Telemetry, Dynamic Risk Scoring, 
 Multi-Agent SCADA logs, and Prescriptive Mitigation Planning (SAP/Maximo).
 """
 
