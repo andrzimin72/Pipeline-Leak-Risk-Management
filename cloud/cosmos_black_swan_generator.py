@@ -11,7 +11,7 @@ import paho.mqtt.client as mqtt
 
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-TOPIC_PREFIX = "exxonmobil/pipeline/node043/"
+TOPIC_PREFIX = "exxonmobil/pipeline/node042/"
 
 class CosmosBlackSwanGenerator:
     def __init__(self):
