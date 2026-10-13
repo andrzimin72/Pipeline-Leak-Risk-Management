@@ -1,8 +1,8 @@
 # dashboard/risk_heatmap.py
 """
 Executive Dynamic Risk Heatmap.
-Visualizes the real-time Dynamic Risk Index (DRI) across the pipeline network 
-using interactive geospatial mapping.
+Visualizes the real-time Dynamic Risk Index (DRI) across the Pipeline Network 
+using Interactive Geospatial Mapping.
 """
 
 import streamlit as st
