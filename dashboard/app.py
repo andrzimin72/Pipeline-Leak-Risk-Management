@@ -1,7 +1,7 @@
 # dashboard/app.py
 """
 Pipeline Leak Risk Management Streamlit Executive Command Center.
-Visualizes 11-modal sensor fusion, Geospatial Risk Heatmap, Multi-Agent SCADA actions, 
+Visualizes 11-modal Sensor Fusion, Geospatial Risk Heatmap, Multi-Agent SCADA actions, 
 and automated SAP/Maximo Work Orders.
 """
 
