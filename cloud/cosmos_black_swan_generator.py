@@ -11,14 +11,14 @@ import paho.mqtt.client as mqtt
 
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-TOPIC_PREFIX = "exxonmobil/pipeline/node042/"
+TOPIC_PREFIX = "exxonmobil/pipeline/node043/"
 
 class CosmosBlackSwanGenerator:
     def __init__(self):
         self.client = mqtt.Client()
         self.client.connect(MQTT_BROKER, MQTT_PORT, 60)
         self.client.loop_start()
-        print("🌌 Cosmos Black Swan Generator initialized. Connecting to MQTT...")
+        print("Cosmos Black Swan Generator initialized. Connecting to MQTT...")
 
     def publish_sensor(self, sensor_name: str, value: float):
         payload = json.dumps({"value": value, "timestamp": time.time()})
