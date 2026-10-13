@@ -61,9 +61,9 @@ def run_federated_server():
     
     # Simulate receiving updates from 3 different pipeline nodes
     print("--- Simulating Federated Round ---")
-    server.receive_update("JETSON-NODE-042", [0.001, -0.002, 0.5], 100)
-    server.receive_update("JETSON-NODE-043", [-0.001, 0.001, 0.2], 150)
-    server.receive_update("JETSON-NODE-044", [0.002, -0.001, 0.8], 80)
+    server.receive_update("JETSON-NODE-041", [0.001, -0.002, 0.5], 100)
+    server.receive_update("JETSON-NODE-042", [-0.001, 0.001, 0.2], 150)
+    server.receive_update("JETSON-NODE-043", [0.002, -0.001, 0.8], 80)
     
     # Aggregate
     server.aggregate_global_model()
