@@ -1,7 +1,7 @@
 # edge/federated_client.py
 """
 NVIDIA Jetson Federated Learning Client.
-Trains the local PhysicsNeMo model on proprietary sensor data 
+Trains the local PhysicsNeMo Model on proprietary sensor data 
 and sends only encrypted weight updates to the Nebius Cloud via mTLS.
 """
 
