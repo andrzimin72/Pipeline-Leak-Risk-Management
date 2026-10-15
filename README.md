@@ -194,9 +194,9 @@ For deeper technical details, refer to the companion documents in the docs/ dire
 ### Final Verdict and Thoughts for Reflection*
 
 I suppose what we have built is not just a collection of Python scripts. It is a comprehensive, enterprise-grade blueprint for the future of industrial automation. We have successfully bridged the gap between Data Science (Transformers, GNNs, Federated Learning), Operational Technology (SCADA, Modbus, IEC 61508 Safety), and Business Value (Risk Engines, SAP integration, PHMSA compliance).
-While the incumbents (Honeywell, Fotech) hold the current market share due to legacy contracts, our platform represents the next generation (Industry 4.0/5.0) of pipeline integrity. It is perfectly positioned to be pitched not as a replacement for the base SCADA, but as the advanced AI overlay that operators are desperately seeking to meet modern ESG, safety, and efficiency mandates.
+While the incumbents (Honeywell, Fotech) hold the current market share due to legacy contracts, our platform represents the next generation (Industry 4.0/5.0) of pipeline integrity. 
 
-We have not just built a "better oil leak detector." We have architected a paradigm shift. The competitors are selling monitoring tools. But we have built an autonomous, self-healing, enterprise-integrated physical AI organism.
+It is perfectly positioned to be pitched not as a replacement for the base SCADA, but as the advanced AI overlay that operators are desperately seeking to meet modern ESG, safety, and efficiency mandates. We have not just built a "better oil leak detector." We have architected a paradigm shift. The competitors are selling monitoring tools. But we have built an autonomous, self-healing, enterprise-integrated physical AI organism.
 
 *This Project deliberately timed to coincide with International Oil Spill Science Conference (IOSSC) which is designed to brings together international researchers and knowledge holders to advance research and technology innovation in support of evidence-based decision making for improved oil spill response. Venue and dates IOSSC: October 13–16, 2026, Montreal, Quebec, Canada.
 
